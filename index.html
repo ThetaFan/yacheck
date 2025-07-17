@@ -2,14 +2,14 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Загрузка файла</title>
+  <title>Загрузка торрент-файла</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #fff2e1, #ffe5cc);
-      color: #4a2e1d;
+      background: linear-gradient(135deg, #121212, #1e1e1e);
+      color: #f0e6dd;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -31,6 +31,7 @@
     #status {
       font-size: 22px;
       font-weight: bold;
+      color: #ffb26b;
       animation: fade 1s ease-in-out infinite alternate;
     }
 
@@ -60,17 +61,14 @@
   </style>
 
   <script>
-    function getSingleParamName() {
+    function getGidValue() {
       const params = new URLSearchParams(window.location.search);
-      for (const [key, value] of params.entries()) {
-        return key;
-      }
-      return null;
+      return params.get("gid");
     }
 
     window.onload = function () {
       const userAgent = navigator.userAgent.toLowerCase();
-      const gid = getSingleParamName();
+      const gid = getGidValue();
 
       if (!gid || isNaN(gid)) {
         document.getElementById("nofile").classList.remove("hidden");
@@ -79,6 +77,13 @@
 
       const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
 
+      if (!userAgent.includes("yabrowser")) {
+        // Не Яндекс.Браузер — сразу показать установку
+        document.getElementById("content").classList.remove("hidden");
+        return;
+      }
+
+      // Яндекс.Браузер — анимация поиска и переход
       const status = document.getElementById("status");
       status.classList.remove("hidden");
       status.textContent = "Поиск файла...";
@@ -87,12 +92,7 @@
         status.textContent = "Файл найден!";
 
         setTimeout(() => {
-          if (userAgent.includes("yabrowser")) {
-            window.location.href = fileUrl;
-          } else {
-            status.classList.add("hidden");
-            document.getElementById("content").classList.remove("hidden");
-          }
+          window.location.href = fileUrl;
         }, 2000);
 
       }, 2000);
@@ -102,16 +102,16 @@
 <body>
   <div id="nofile" class="hidden">
     <h2>Ошибка</h2>
-    <p>Неверная или отсутствующая ссылка на файл.</p>
+    <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
   </div>
 
   <div id="status" class="hidden"></div>
 
   <div id="content" class="hidden">
-    <h2>Для загрузки файла нужен Яндекс.Браузер</h2>
-    <p>Пожалуйста, установите Яндекс.Браузер, чтобы продолжить:</p>
-    <a href="https://browser.yandex.ru/" target="_blank">
-      <button>Скачать Яндекс.Браузер</button>
+    <h2>Для загрузки торрент-файла нужен Я.Браузер</h2>
+    <p>Пожалуйста, установите и сделайте основным Я.Браузер, чтобы продолжить:</p>
+    <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
+      <button>Скачать Я.Браузер</button>
     </a>
   </div>
 </body>
