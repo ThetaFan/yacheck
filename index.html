@@ -44,6 +44,7 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin: 5px;
     }
 
     button:hover {
@@ -57,6 +58,13 @@
 
     .hidden {
       display: none;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
   </style>
 
@@ -78,23 +86,19 @@
       const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
 
       if (!userAgent.includes("yabrowser")) {
-        // Не Яндекс.Браузер — сразу показать установку
         document.getElementById("content").classList.remove("hidden");
         return;
       }
 
-      // Яндекс.Браузер — анимация поиска и переход
       const status = document.getElementById("status");
       status.classList.remove("hidden");
       status.textContent = "Поиск торрент-файла...";
 
       setTimeout(() => {
         status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
-
         setTimeout(() => {
           window.location.href = fileUrl;
         }, 2000);
-
       }, 2000);
     };
   </script>
@@ -110,9 +114,14 @@
   <div id="content" class="hidden">
     <h2>Для загрузки торрент-файла нужен Я.Браузер</h2>
     <p>Установите Я.Браузер, сделайте его основным и заново откройте эту страницу</p>
-    <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
-      <button>Скачать Я.Браузер</button>
-    </a>
+    <div class="buttons">
+      <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
+        <button>Скачать Я.Браузер на ПК</button>
+      </a>
+      <a href="https://redirect.appmetrica.yandex.com/serve/389430554958814120?clid=12799475" target="_blank">
+        <button>Скачать Я.Браузер на Андроид</button>
+      </a>
+    </div>
   </div>
 </body>
 </html>
