@@ -2,27 +2,116 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Загрузка</title>
+  <title>Загрузка файла</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #fff2e1, #ffe5cc);
+      color: #4a2e1d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    #status {
+      font-size: 22px;
+      font-weight: bold;
+      animation: fade 1s ease-in-out infinite alternate;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #ff944d;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff7a1f;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+
   <script>
+    function getSingleParamName() {
+      const params = new URLSearchParams(window.location.search);
+      for (const [key, value] of params.entries()) {
+        return key;
+      }
+      return null;
+    }
+
     window.onload = function () {
       const userAgent = navigator.userAgent.toLowerCase();
+      const gid = getSingleParamName();
 
-      if (userAgent.includes("yabrowser")) {
-        // Если Яндекс.Браузер — редирект на файл
-        window.location.href = "https://example.com/yourfile.zip";
-      } else {
-        // Иначе — показать установку
-        document.getElementById("content").style.display = "block";
+      if (!gid || isNaN(gid)) {
+        document.getElementById("nofile").classList.remove("hidden");
+        return;
       }
+
+      const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
+
+      const status = document.getElementById("status");
+      status.classList.remove("hidden");
+      status.textContent = "Поиск файла...";
+
+      setTimeout(() => {
+        status.textContent = "Файл найден!";
+
+        setTimeout(() => {
+          if (userAgent.includes("yabrowser")) {
+            window.location.href = fileUrl;
+          } else {
+            status.classList.add("hidden");
+            document.getElementById("content").classList.remove("hidden");
+          }
+        }, 2000);
+
+      }, 2000);
     };
   </script>
 </head>
 <body>
-  <div id="content" style="display:none; text-align:center; margin-top:50px;">
+  <div id="nofile" class="hidden">
+    <h2>Ошибка</h2>
+    <p>Неверная или отсутствующая ссылка на файл.</p>
+  </div>
+
+  <div id="status" class="hidden"></div>
+
+  <div id="content" class="hidden">
     <h2>Для загрузки файла нужен Яндекс.Браузер</h2>
     <p>Пожалуйста, установите Яндекс.Браузер, чтобы продолжить:</p>
     <a href="https://browser.yandex.ru/" target="_blank">
-      <button style="padding: 10px 20px; font-size: 16px;">Скачать Яндекс.Браузер</button>
+      <button>Скачать Яндекс.Браузер</button>
     </a>
   </div>
 </body>
