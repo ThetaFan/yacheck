@@ -2,33 +2,20 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Загрузка файла</title>
-  <link rel="icon" href="https://small-games.info/favicon.ico" type="image/x-icon">
+  <title>Загрузка торрент-файла</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      padding-top: 5em;
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(135deg, #121212, #1e1e1e);
       color: #f0e6dd;
-      overflow-x: hidden;
-    }
-
-    header {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-    }
-
-    header img {
-      height: 50px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      flex-direction: column;
     }
 
     h2 {
@@ -41,24 +28,11 @@
       margin-bottom: 20px;
     }
 
-    .message {
+    #status {
       font-size: 22px;
       font-weight: bold;
-      margin-bottom: 10px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeSlideIn 0.8s ease-out forwards;
-    }
-
-    .message.delay-1 { animation-delay: 0.5s; }
-    .message.delay-2 { animation-delay: 2.5s; }
-    .message.delay-3 { animation-delay: 4.5s; }
-
-    @keyframes fadeSlideIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      color: #ffb26b;
+      animation: fade 1s ease-in-out infinite alternate;
     }
 
     button {
@@ -76,36 +50,14 @@
       background-color: #ff7a1f;
     }
 
-    .popup-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #ff944d;
-      border-radius: 10px;
-      padding: 12px 20px;
-      font-size: 16px;
-      z-index: 1000;
-      animation: popupFade 0.8s ease-out forwards;
-    }
-
-    @keyframes popupFade {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fade {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
     }
 
     .hidden {
       display: none;
     }
-
-    #status1 { color: #ffb26b; }
-    #status2 { color: #ffb26b; }
-    #status3 { color: #6cff82; }
   </style>
 
   <script>
@@ -126,53 +78,40 @@
       const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
 
       if (!userAgent.includes("yabrowser")) {
-        document.getElementById("popup").classList.remove("hidden");
+        // Не Яндекс.Браузер — сразу показать установку
+        document.getElementById("content").classList.remove("hidden");
         return;
       }
 
-      // Яндекс.Браузер — показать сообщения с задержками
-      const status1 = document.getElementById("status1");
-      const status2 = document.getElementById("status2");
-      const status3 = document.getElementById("status3");
-
-      status1.classList.remove("hidden");
+      // Яндекс.Браузер — анимация поиска и переход
+      const status = document.getElementById("status");
+      status.classList.remove("hidden");
+      status.textContent = "Поиск файла...";
 
       setTimeout(() => {
-        status2.classList.remove("hidden");
+        status.textContent = "Файл найден! Скачивание начнётся автоматически.";
 
         setTimeout(() => {
-          status3.classList.remove("hidden");
-
-          setTimeout(() => {
-            window.location.href = fileUrl;
-          }, 1000);
-
+          window.location.href = fileUrl;
         }, 2000);
+
       }, 2000);
     };
   </script>
 </head>
 <body>
-  <header>
-    <img src="http://small-games.info/3css/default/img/logo106.png" alt="Logo">
-  </header>
-
-  <div class="container">
-    <div id="nofile" class="hidden">
-      <h2>Ошибка</h2>
-      <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
-    </div>
-
-    <div id="status1" class="message delay-1 hidden">Поиск торрента...</div>
-    <div id="status2" class="message delay-2 hidden">Торрент найден!</div>
-    <div id="status3" class="message delay-3 hidden">Скачивание торрент-файла...</div>
+  <div id="nofile" class="hidden">
+    <h2>Ошибка</h2>
+    <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
   </div>
 
-  <div id="popup" class="popup-button hidden">
+  <div id="status" class="hidden"></div>
+
+  <div id="content" class="hidden">
     <h2>Для загрузки торрент-файла нужен Я.Браузер</h2>
-    <p>Пожалуйста, установите и сделайте основным Я.Браузер, чтобы продолжить:</p>
-    <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank" style="text-decoration: none; color: white;">
-      Скачать Я.Браузер
+    <p>Установите Я.Браузер, сделайте его основным и заново откройте эту страницу</p>
+    <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
+      <button>Скачать Я.Браузер</button>
     </a>
   </div>
 </body>
