@@ -86,10 +86,10 @@
       // Яндекс.Браузер — анимация поиска и переход
       const status = document.getElementById("status");
       status.classList.remove("hidden");
-      status.textContent = "Поиск файла...";
+      status.textContent = "Поиск торрент-файла...";
 
       setTimeout(() => {
-        status.textContent = "Файл найден! Скачивание начнётся автоматически.";
+        status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
 
         setTimeout(() => {
           window.location.href = fileUrl;
