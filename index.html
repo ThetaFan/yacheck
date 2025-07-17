@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Загрузка</title>
+  <script>
+    window.onload = function () {
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (userAgent.includes("yabrowser")) {
+        // Если Яндекс.Браузер — редирект на файл
+        window.location.href = "https://example.com/yourfile.zip";
+      } else {
+        // Иначе — показать установку
+        document.getElementById("content").style.display = "block";
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="content" style="display:none; text-align:center; margin-top:50px;">
+    <h2>Для загрузки файла нужен Яндекс.Браузер</h2>
+    <p>Пожалуйста, установите Яндекс.Браузер, чтобы продолжить:</p>
+    <a href="https://browser.yandex.ru/" target="_blank">
+      <button style="padding: 10px 20px; font-size: 16px;">Скачать Яндекс.Браузер</button>
+    </a>
+  </div>
+</body>
+</html>
