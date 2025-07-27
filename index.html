@@ -26,9 +26,24 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       text-align: center;
       flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .logo-container {
+      margin-bottom: 30px;
+      max-width: 616px;
+      width: 100%;
+    }
+
+    .logo-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     h2 {
@@ -88,7 +103,24 @@
       return params.get("gid");
     }
 
+    function getLogoValue() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("logo");
+    }
+
+    function showLogoIfExists() {
+      const logo = getLogoValue();
+      if (logo && !isNaN(logo)) {
+        const logoContainer = document.createElement('div');
+        logoContainer.className = 'logo-container';
+        logoContainer.innerHTML = `<img src="https://steamcdn-a.akamaihd.net/steam/apps/${logo}/capsule_616x353.jpg" alt="Game logo">`;
+        document.body.insertBefore(logoContainer, document.body.firstChild);
+      }
+    }
+
     window.onload = function () {
+      showLogoIfExists();
+      
       const userAgent = navigator.userAgent.toLowerCase();
       const gid = getGidValue();
 
