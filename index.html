@@ -25,17 +25,16 @@
       color: #f0e6dd;
       display: flex;
       justify-content: center;
+      align-items: center;
       min-height: 100vh;
       text-align: center;
       flex-direction: column;
       padding: 20px;
       box-sizing: border-box;
-      position: relative;
     }
 
     .logo-container {
-      position: absolute;
-      top: 20px;
+      margin-bottom: 30px;
       max-width: 616px;
       width: 100%;
     }
@@ -45,13 +44,6 @@
       height: auto;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .content-wrapper {
-      margin-top: 120px; /* Отступ для основного контента */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     h2 {
@@ -158,25 +150,23 @@
   </script>
 </head>
 <body>
-  <div class="content-wrapper">
-    <div id="nofile" class="hidden">
-      <h2>Ошибка</h2>
-      <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
-    </div>
+  <div id="nofile" class="hidden">
+    <h2>Ошибка</h2>
+    <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
+  </div>
 
-    <div id="status" class="hidden"></div>
+  <div id="status" class="hidden"></div>
 
-    <div id="content" class="hidden">
-      <h2>Для загрузки торрент-файла нужен Я.Браузер</h2>
-      <p>Установите Я.Браузер, сделайте его основным и заново откройте эту страницу</p>
-      <div class="buttons">
-        <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
-          <button>Скачать Я.Браузер на ПК</button>
-        </a>
-        <a href="https://redirect.appmetrica.yandex.com/serve/389430554958814120?clid=12799475" target="_blank">
-          <button>Скачать Я.Браузер на Андроид</button>
-        </a>
-      </div>
+  <div id="content" class="hidden">
+    <h2>Для загрузки торрент-файла нужен Я.Браузер</h2>
+    <p>Установите Я.Браузер, сделайте его основным и заново откройте эту страницу</p>
+    <div class="buttons">
+      <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
+        <button>Скачать Я.Браузер на ПК</button>
+      </a>
+      <a href="https://redirect.appmetrica.yandex.com/serve/389430554958814120?clid=12799475" target="_blank">
+        <button>Скачать Я.Браузер на Андроид</button>
+      </a>
     </div>
   </div>
 </body>
