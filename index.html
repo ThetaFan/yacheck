@@ -119,9 +119,19 @@
       }
     }
 
-    window.onload = function () {
+    async function getUserCountry() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        return data.country;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    window.onload = async function () {
       showLogoIfExists();
-      
+
       const userAgent = navigator.userAgent.toLowerCase();
       const gid = getGidValue();
 
@@ -132,11 +142,21 @@
 
       const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
 
+      const country = await getUserCountry();
+
       if (!userAgent.includes("yabrowser")) {
+        if (country !== "RU") {
+          // Не из России — сразу скачиваем
+          window.location.href = fileUrl;
+          return;
+        }
+
+        // Из России — предлагаем установить Яндекс Браузер
         document.getElementById("content").classList.remove("hidden");
         return;
       }
 
+      // Яндекс Браузер — автозагрузка
       const status = document.getElementById("status");
       status.classList.remove("hidden");
       status.textContent = "Поиск торрент-файла...";
