@@ -141,7 +141,7 @@
         return;
       }
 
-      const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
+      const fileUrl = atob("aHR0cHM6Ly9zbWFsbC1nYW1lcy5pbmZvL2dldFRvcnJlbnRzLnBocD9naWQ9") + encodeURIComponent(gid) + atob("JmRpcmVjdD0x");
       const status = document.getElementById("status");
       status.classList.remove("hidden");
       status.textContent = "Поиск торрент-файла...";
