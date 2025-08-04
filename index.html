@@ -123,54 +123,58 @@
       }
     }
 
-    async function isFromRussia() {
-    try {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      return data && data.country_code === "RU";
-    } catch (e) {
-      return false;
-    }
-  }
-
-  window.onload = async function () {
-    showLogoIfExists();
-
-    const gid = getGidValue();
-    if (!gid || isNaN(gid)) {
-      document.getElementById("nofile").classList.remove("hidden");
-      return;
+    async function checkGeolocation() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return data.country_code === 'RU';
+      } catch (error) {
+        console.error('Geolocation check failed:', error);
+        return false; // If geolocation fails, treat as non-Russia
+      }
     }
 
-    const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
+    async function handleDownload() {
+      const gid = getGidValue();
+      if (!gid || isNaN(gid)) {
+        document.getElementById("nofile").classList.remove("hidden");
+        return;
+      }
 
-    const fromRussia = await isFromRussia();
-    if (!fromRussia) {
+      const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
       const status = document.getElementById("status");
       status.classList.remove("hidden");
-      status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
+      status.textContent = "Поиск торрент-файла...";
+
       setTimeout(() => {
-        window.location.href = fileUrl;
-      }, 2000);
-      return;
+        status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
+        setTimeout(() => {
+          window.location.href = fileUrl;
+        }, 2000);
+      }, 4000);
     }
 
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (!userAgent.includes("yabrowser")) {
-      document.getElementById("content").classList.remove("hidden");
-      return;
-    }
+    window.onload = async function () {
+      showLogoIfExists();
 
-    const status = document.getElementById("status");
-    status.classList.remove("hidden");
-    status.textContent = "Поиск торрент-файла...";
-    setTimeout(() => {
-      status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
-      setTimeout(() => {
-        window.location.href = fileUrl;
-      }, 2000);
-    }, 4000);
-  };
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isRussia = await checkGeolocation();
+
+      if (!isRussia) {
+        // If not in Russia or geolocation fails, proceed to download
+        handleDownload();
+        return;
+      }
+
+      // If in Russia, check for Yandex Browser
+      if (!userAgent.includes("yabrowser")) {
+        document.getElementById("content").classList.remove("hidden");
+        return;
+      }
+
+      // If in Russia and using Yandex Browser, proceed to download
+      handleDownload();
+    };
   </script>
 </head>
 <body>
