@@ -123,35 +123,54 @@
       }
     }
 
-    window.onload = function () {
-      showLogoIfExists();
-      
-      const userAgent = navigator.userAgent.toLowerCase();
-      const gid = getGidValue();
+    async function isFromRussia() {
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      const data = await res.json();
+      return data && data.country_code === "RU";
+    } catch (e) {
+      return false;
+    }
+  }
 
-      if (!gid || isNaN(gid)) {
-        document.getElementById("nofile").classList.remove("hidden");
-        return;
-      }
+  window.onload = async function () {
+    showLogoIfExists();
 
-      const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
+    const gid = getGidValue();
+    if (!gid || isNaN(gid)) {
+      document.getElementById("nofile").classList.remove("hidden");
+      return;
+    }
 
-      if (!userAgent.includes("yabrowser")) {
-        document.getElementById("content").classList.remove("hidden");
-        return;
-      }
+    const fileUrl = `https://small-games.info/getTorrents.php?gid=${gid}&direct=1`;
 
+    const fromRussia = await isFromRussia();
+    if (!fromRussia) {
       const status = document.getElementById("status");
       status.classList.remove("hidden");
-      status.textContent = "Поиск торрент-файла...";
-
+      status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
       setTimeout(() => {
-        status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
-        setTimeout(() => {
-          window.location.href = fileUrl;
-        }, 2000);
-      }, 4000);
-    };
+        window.location.href = fileUrl;
+      }, 2000);
+      return;
+    }
+
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (!userAgent.includes("yabrowser")) {
+      document.getElementById("content").classList.remove("hidden");
+      return;
+    }
+
+    const status = document.getElementById("status");
+    status.classList.remove("hidden");
+    status.textContent = "Поиск торрент-файла...";
+    setTimeout(() => {
+      status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
+      setTimeout(() => {
+        window.location.href = fileUrl;
+      }, 2000);
+    }, 4000);
+  };
   </script>
 </head>
 <body>
