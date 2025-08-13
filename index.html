@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Файлы для скачивания</title>
+  <title>Загрузка торрент-файла</title>
   <link rel="icon" href="https://small-games.info/favicon.ico" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <!-- Yandex.Metrika counter -->
@@ -12,11 +12,11 @@
           m[i].l=1*new Date();
           for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
           k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=103630779', 'ym');
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=103493086', 'ym');
 
-      ym(103630779, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+      ym(103493086, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
   </script>
-  <noscript><div><img src="https://mc.yandex.ru/watch/103630779" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <noscript><div><img src="https://mc.yandex.ru/watch/103493086" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
   <style>
     body {
@@ -58,35 +58,11 @@
       margin-bottom: 20px;
     }
 
-    a.link-pixeldrain {
-      color: #4fc3f7;
+    #status {
+      font-size: 22px;
       font-weight: bold;
-    }
-
-    a.link-mediafire {
-      color: #ef5350;
-      font-weight: bold;
-    }
-
-    a.link-gofile {
-      color: #90ee90;
-      font-weight: bold;
-    }
-    
-    a.link-ranoz {
-      color: #ff9800;
-      font-weight: bold;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
+      color: #ffb26b;
+      animation: fade 1s ease-in-out infinite alternate;
     }
 
     button {
@@ -99,22 +75,70 @@
       color: black;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      margin: 5px;
     }
 
     button:hover {
       background-color: #7fd87f;
     }
-    
+
+    @keyframes fade {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .warning {
       color: red;
     }
-    
   </style>
 
   <script>
-    function getParamValue(key) {
+    function getGidValue() {
       const params = new URLSearchParams(window.location.search);
-      return params.get(key);
+      return params.get("gid");
+    }
+
+    function getLogoValue() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("logo");
+    }
+
+    async function checkImage(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+    }
+
+    async function showLogoIfExists() {
+      const logo = getLogoValue();
+      if (logo && !isNaN(logo)) {
+        const logoContainer = document.createElement('div');
+        logoContainer.className = 'logo-container';
+        
+        const primaryLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/capsule_616x353.jpg`;
+        const fallbackLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/header.jpg`;
+        
+        const primaryLogoExists = await checkImage(primaryLogoUrl);
+        
+        const logoUrl = primaryLogoExists ? primaryLogoUrl : fallbackLogoUrl;
+        
+        logoContainer.innerHTML = `<img src="${logoUrl}" alt="Game logo">`;
+        document.body.insertBefore(logoContainer, document.body.firstChild);
+      }
     }
 
     async function checkGeolocation() {
@@ -128,79 +152,75 @@
       }
     }
 
-    async function checkImage(url) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-      });
-    }
-
-    async function getLogoUrl(logoId) {
-      const capsuleUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logoId}/capsule_616x353.jpg`;
-      const isCapsuleAvailable = await checkImage(capsuleUrl);
-      
-      if (isCapsuleAvailable) {
-        return capsuleUrl;
-      } else {
-        return `https://steamcdn-a.akamaihd.net/steam/apps/${logoId}/header.jpg`;
+    async function handleDownload() {
+      const gid = getGidValue();
+      if (!gid || isNaN(gid)) {
+        document.getElementById("nofile").classList.remove("hidden");
+        return;
       }
+
+      const fileUrl = atob("aHR0cHM6Ly9zbWFsbC1nYW1lcy5pbmZvL2dldFRvcnJlbnRzLnBocD9naWQ9") + encodeURIComponent(gid) + atob("JmRpcmVjdD0x");
+      const status = document.getElementById("status");
+      status.classList.remove("hidden");
+      status.textContent = "Поиск торрент-файла...";
+
+      setTimeout(() => {
+        status.textContent = "Торрент-файл найден! Скачивание начнётся автоматически.";
+        setTimeout(() => {
+          window.location.href = fileUrl;
+        }, 2000);
+      }, 4000);
     }
 
-    async function renderContent() {
-      const logo = getParamValue("logo");
-      const id1 = getParamValue("id1");
-      const id2 = getParamValue("id2");
-      const id3 = getParamValue("id3");
-      const id4 = getParamValue("id4");
+    function trackDownloadClick() {
+      ym(103493086, 'reachGoal', 'PC_DOWNLOAD_CLICK');
+      }
+
+    window.onload = async function () {
+      await showLogoIfExists();
+
+      const gid = getGidValue();
+      if (!gid || isNaN(gid)) {
+        document.getElementById("nofile").classList.remove("hidden");
+        return;
+      }
 
       const userAgent = navigator.userAgent.toLowerCase();
-      const isYandex = userAgent.includes("yabrowser");
       const isRussia = await checkGeolocation();
 
-      const logoContainer = document.createElement('div');
-      logoContainer.className = 'logo-container';
-
-      // логотип (всегда)
-      if (logo && !isNaN(logo)) {
-        const logoUrl = await getLogoUrl(logo);
-        logoContainer.innerHTML = `<img src="${logoUrl}" alt="Game logo">`;
+      if (!isRussia) {
+        handleDownload();
+        return;
       }
 
-      let htmlBelowLogo = "";
-
-      if (isRussia && !isYandex) {
-        htmlBelowLogo += `
-          <h2 class="warning">Для доступа к файлам используйте Я.Браузер</h2>
-          <p>Установите Я.Браузер и откройте в нём эту страницу</p>
-          <div class="buttons">
-            <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank">
-              <button>Скачать Я.Браузер на ПК</button>
-            </a>
-            <a href="https://redirect.appmetrica.yandex.com/serve/389430554958814120?clid=12799475" target="_blank">
-              <button>Скачать Я.Браузер на Андроид</button>
-            </a>
-          </div>
-        `;
-      } else {
-        let links = "";
-        if (id1) links += `<p><a href="https://pixeldrain.com/u/${id1}" target="_blank" class="link-pixeldrain">Скачать с PIXELDRAIN</a></p>`;
-        if (id2) links += `<p><a href="https://www.mediafire.com/file/${id2}" target="_blank" class="link-mediafire">Скачать с MEDIAFIRE</a></p>`;
-        if (id3) links += `<p><a href="https://gofile.io/d/${id3}" target="_blank" class="link-gofile">Скачать с GOFILE</a></p>`;
-        if (id4) links += `<p><a href="https://ranoz.gg/file/${id4}" target="_blank" class="link-ranoz">Скачать с RANOZ</a></p>`;
-        if (!id1 && !id2 && !id3 && !id4) links += `<p>Ссылки для скачивания не найдены.</p>`;
-
-        htmlBelowLogo += links;
+      if (!userAgent.includes("yabrowser")) {
+        document.getElementById("content").classList.remove("hidden");
+        return;
       }
 
-      logoContainer.innerHTML += htmlBelowLogo;
-      document.body.appendChild(logoContainer);
-    }
-
-    window.onload = renderContent;
+      handleDownload();
+    };
   </script>
 </head>
 <body>
+  <div id="nofile" class="hidden">
+    <h2>Ошибка</h2>
+    <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
+  </div>
+
+  <div id="status" class="hidden"></div>
+
+  <div id="content" class="hidden">
+    <h2 class="warning">Для доступа к торрент-файлу используйте Я.Браузер</h2>
+    <p>Установите Я.Браузер и откройте в нём эту страницу</p>
+    <div class="buttons">
+      <a href="https://browser.yandex.ru/download?partner_id=831050&banerid=1312095879" target="_blank" onclick="trackDownloadClick()">
+        <button>Скачать Я.Браузер на ПК</button>
+      </a>
+      <a href="https://redirect.appmetrica.yandex.com/serve/389430554958814120?clid=12799475" target="_blank">
+        <button>Скачать Я.Браузер на Андроид</button>
+      </a>
+    </div>
+  </div>
 </body>
 </html>
