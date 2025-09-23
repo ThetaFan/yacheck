@@ -101,6 +101,14 @@
     .warning {
       color: red;
     }
+
+    .info-message {
+      font-size: 20px;
+      color: #90ee90;
+      margin: 20px 0;
+      max-width: 600px;
+      line-height: 1.5;
+    }
   </style>
 
   <script>
@@ -172,9 +180,24 @@
       }, 4000);
     }
 
+    function redirectToYandexBrowser() {
+      trackDownloadClick();
+      
+      // Показываем сообщение перед перенаправлением
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'info-message';
+      messageDiv.innerHTML = 'Скачивание началось! После установки откройте эту страницу в Я.Браузере и получите ссылку на торрент';
+      document.body.appendChild(messageDiv);
+      
+      // Перенаправляем через короткую паузу, чтобы пользователь успел прочитать сообщение
+      setTimeout(() => {
+        window.location.href = "https://browser.yandex.ru/download?partner_id=831050&banerid=1313076764";
+      }, 3000);
+    }
+
     function trackDownloadClick() {
       ym(103493086, 'reachGoal', 'PC_DOWNLOAD_CLICK');
-      }
+    }
 
     window.onload = async function () {
       await showLogoIfExists();
@@ -194,7 +217,8 @@
       }
 
       if (!userAgent.includes("yabrowser")) {
-        document.getElementById("content").classList.remove("hidden");
+        // Вместо показа кнопок сразу перенаправляем на скачивание Яндекс.Браузера
+        redirectToYandexBrowser();
         return;
       }
 
