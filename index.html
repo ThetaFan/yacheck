@@ -5,7 +5,6 @@
   <title>Загрузка торрент-файла</title>
   <link rel="icon" href="https://small-games.info/favicon.ico" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
       (function(m,e,t,r,i,k,a){
           m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -17,7 +16,6 @@
       ym(103493086, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/103493086" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-  <!-- /Yandex.Metrika counter -->
   <style>
     body {
       margin: 0;
@@ -63,6 +61,47 @@
       font-weight: bold;
       color: #ffb26b;
       animation: fade 1s ease-in-out infinite alternate;
+      margin-bottom: 20px;
+    }
+
+    /* Стили для блока VPN */
+    .vpn-container {
+      margin-top: 40px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      max-width: 500px;
+      transition: transform 0.3s ease;
+    }
+
+    .vpn-container:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .vpn-logo-small {
+      width: 80px;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 12px;
+    }
+
+    .vpn-text {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .vpn-link {
+      color: #0088cc;
+      text-decoration: none;
+      font-weight: bold;
+      border-bottom: 1px dashed #0088cc;
+    }
+
+    .vpn-link:hover {
+      color: #24a1de;
+      border-bottom-style: solid;
     }
 
     button {
@@ -91,22 +130,12 @@
       display: none;
     }
 
-    .warning {
-      color: red;
-    }
-
     .info-message {
       font-size: 20px;
       color: #90ee90;
       margin: 20px 0;
       max-width: 1000px;
       line-height: 1.5;
-    }
-
-    .bold-text {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 10px;
     }
 
     .highlight {
@@ -127,29 +156,9 @@
       animation: glow 2s ease-in-out infinite alternate;
     }
     
-    .bonus-message a {
-      color: #ffd700;
-      text-decoration: none;
-      border-bottom: 2px dashed #4caf50;
-      transition: all 0.3s ease;
-    }
-    
-    .bonus-message a:hover {
-      color: #ffd700;
-      border-bottom-color: #ffd700;
-      transform: scale(1.05);
-    }
-    
     @keyframes glow {
       from { text-shadow: 0 0 5px #4caf50; }
       to { text-shadow: 0 0 20px #4caf50; }
-    }
-    
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
     }
   </style>
 
@@ -178,14 +187,10 @@
       if (logo && !isNaN(logo)) {
         const logoContainer = document.createElement('div');
         logoContainer.className = 'logo-container';
-        
         const primaryLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/capsule_616x353.jpg`;
         const fallbackLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/header.jpg`;
-        
         const primaryLogoExists = await checkImage(primaryLogoUrl);
-        
         const logoUrl = primaryLogoExists ? primaryLogoUrl : fallbackLogoUrl;
-        
         logoContainer.innerHTML = `<img src="${logoUrl}" alt="Game logo">`;
         document.body.insertBefore(logoContainer, document.body.firstChild);
       }
@@ -222,68 +227,35 @@
       }, 4000);
     }
 
-    function showBonusMessage() {
-      // Проверяем, есть ли уже бонусное сообщение
-      if (!document.querySelector('.bonus-message')) {
-        const bonusDiv = document.createElement('div');
-        bonusDiv.className = 'bonus-message';
-        const bonusLink = "https://yandex.ru/project/browser/bonus/multioffer/affiliate_4prod?source=pWRP8eS1VsC2X59560&partner_string=P89XvN11U6RuE47077&cliddbro=14080831&clidmbro=14080827&cliddefault=14080834&clidpp=14185507";
-        bonusDiv.innerHTML = `🎁 <a href="${bonusLink}" target="_blank" rel="noopener noreferrer">БОНУС: Установи Я.Браузер сегодня и получи до 800 рублей на телефон!</a> 💰`;
-        document.body.appendChild(bonusDiv);
-      }
-    }
-
     function redirectToYandexBrowser() {
-      trackDownloadClick();
-      
-      // Показываем сообщение перед перенаправлением
+      ym(103493086, 'reachGoal', 'PC_DOWNLOAD_CLICK');
       const messageDiv = document.createElement('div');
       messageDiv.className = 'info-message';
-      messageDiv.innerHTML = `
-        <span class="bold-text">Скачивание началось!</span>
-        После установки откройте эту страницу в <span class="highlight">Я.Браузере</span> и получите торрент-файл
-      `;
+      messageDiv.innerHTML = `<span class="bold-text">Скачивание началось!</span><br>После установки откройте эту страницу в <span class="highlight">Я.Браузере</span> и получите торрент-файл`;
       document.body.appendChild(messageDiv);
       
-      // Показываем бонусное сообщение (оно останется навсегда)
-      showBonusMessage();
-      
-      // Перенаправляем через короткую паузу, чтобы пользователь успел прочитать сообщение
       setTimeout(() => {
         window.location.href = "https://redirect.appmetrica.yandex.com/serve/389921547382506988?partner_id=831050&appmetrica_js_redirect=0&full=0&clid=13076765&banerid=1313076764";
       }, 2000);
     }
 
-    function trackDownloadClick() {
-      ym(103493086, 'reachGoal', 'PC_DOWNLOAD_CLICK');
-    }
-
     window.onload = async function () {
       await showLogoIfExists();
-
       const gid = getGidValue();
       if (!gid || isNaN(gid)) {
         document.getElementById("nofile").classList.remove("hidden");
         return;
       }
-
       const userAgent = navigator.userAgent.toLowerCase();
       const isRussia = await checkGeolocation();
-
       if (!isRussia) {
         handleDownload();
         return;
       }
-
       if (!userAgent.includes("yabrowser")) {
-        // Показываем бонусное сообщение сразу (оно останется на странице)
-        showBonusMessage();
-        
-        // Перенаправляем на скачивание Яндекс.Браузера
         redirectToYandexBrowser();
         return;
       }
-
       handleDownload();
     };
   </script>
@@ -295,5 +267,12 @@
   </div>
 
   <div id="status" class="hidden"></div>
+
+  <div class="vpn-container">
+    <img src="vpn.jpg" alt="IgroVPN Logo" class="vpn-logo-small">
+    <div class="vpn-text">
+      Попробуйте наш быстрый и надежный <a href="https://t.me/IgroVPN_bot" target="_blank" class="vpn-link">@IgroVPN</a>
+    </div>
+  </div>
 </body>
 </html>
