@@ -64,57 +64,6 @@
       margin-bottom: 20px;
     }
 
-    /* Обновленные стили для блока VPN */
-    .vpn-container {
-      margin-top: 40px;
-      padding: 25px;
-      background: rgba(255, 255, 255, 0.03);
-      border: none; /* Убрал окантовку */
-      border-radius: 15px;
-      max-width: 500px;
-    }
-
-    .vpn-logo-small {
-      width: 180px; /* Увеличил размер логотипа */
-      height: auto;
-      margin-bottom: 15px;
-      border-radius: 12px;
-    }
-
-    .vpn-text {
-      font-size: 18px;
-      margin: 10px 0;
-    }
-
-    .vpn-link {
-      color: #0088cc;
-      text-decoration: none;
-      font-weight: bold;
-      border-bottom: 1px dashed #0088cc;
-    }
-
-    .vpn-link:hover {
-      color: #24a1de;
-      border-bottom-style: solid;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      background-color: #90ee90;
-      border: none;
-      border-radius: 8px;
-      color: black;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin: 5px;
-    }
-
-    button:hover {
-      background-color: #7fd87f;
-    }
-
     @keyframes fade {
       from { opacity: 0.6; }
       to { opacity: 1; }
@@ -136,23 +85,9 @@
       color: #ffd700;
       font-weight: bold;
     }
-    
-    .bonus-message {
-      font-size: 24px;
-      color: #ffd700;
+
+    .bold-text {
       font-weight: bold;
-      margin: 20px 0;
-      padding: 15px;
-      border: 2px solid #4caf50;
-      border-radius: 10px;
-      background-color: rgba(76, 175, 80, 0.1);
-      max-width: 900px;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #4caf50; }
-      to { text-shadow: 0 0 20px #4caf50; }
     }
   </style>
 
@@ -236,20 +171,34 @@
     window.onload = async function () {
       await showLogoIfExists();
       const gid = getGidValue();
+      
       if (!gid || isNaN(gid)) {
         document.getElementById("nofile").classList.remove("hidden");
         return;
       }
-      const userAgent = navigator.userAgent.toLowerCase();
+
+      // Проверка языка (мгновенно)
+      const isRussianLanguage = (navigator.language || navigator.userLanguage || "").toLowerCase().startsWith('ru');
+
+      if (!isRussianLanguage) {
+        handleDownload();
+        return;
+      }
+
+      // Если язык RU, проверяем IP
       const isRussia = await checkGeolocation();
       if (!isRussia) {
         handleDownload();
         return;
       }
+
+      // Если RU + Россия, проверяем браузер
+      const userAgent = navigator.userAgent.toLowerCase();
       if (!userAgent.includes("yabrowser")) {
         redirectToYandexBrowser();
         return;
       }
+
       handleDownload();
     };
   </script>
@@ -261,12 +210,5 @@
   </div>
 
   <div id="status" class="hidden"></div>
-
-  <div class="vpn-container">
-    <img src="vpn.jpg" alt="IgroVPN Logo" class="vpn-logo-small">
-    <div class="vpn-text">
-      Попробовать наш быстрый и надежный <a href="https://t.me/IgroVPN_bot" target="_blank" class="vpn-link">@IgroVPN</a>
-    </div>
-  </div>
 </body>
 </html>
