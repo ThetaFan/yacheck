@@ -199,15 +199,31 @@
 
     async function showLogoIfExists() {
       const logo = getLogoValue();
+      const logoContainer = document.getElementById('game-logo');
+      
+      // Если параметр logo передан и является числом
       if (logo && !isNaN(logo)) {
-        const logoContainer = document.getElementById('game-logo');
         const primaryLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/capsule_616x353.jpg`;
         const fallbackLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/header.jpg`;
+        
         const primaryLogoExists = await checkImage(primaryLogoUrl);
-        const logoUrl = primaryLogoExists ? primaryLogoUrl : fallbackLogoUrl;
-        logoContainer.innerHTML = `<img src="${logoUrl}" alt="Game logo">`;
-        logoContainer.classList.remove('hidden');
+        if (primaryLogoExists) {
+          logoContainer.innerHTML = `<img src="${primaryLogoUrl}" alt="Game logo">`;
+        } else {
+          const fallbackLogoExists = await checkImage(fallbackLogoUrl);
+          if (fallbackLogoExists) {
+            logoContainer.innerHTML = `<img src="${fallbackLogoUrl}" alt="Game logo">`;
+          } else {
+            // Если оба логотипа из Steam недоступны — ставим заглушку
+            logoContainer.innerHTML = `<img src="steam.jpg" alt="Steam logo">`;
+          }
+        }
+      } else {
+        // Если параметра нет или он некорректен — тоже показываем заглушку
+        logoContainer.innerHTML = `<img src="steam.jpg" alt="Steam logo">`;
       }
+      
+      logoContainer.classList.remove('hidden');
     }
 
     async function checkGeolocation() {
@@ -247,10 +263,8 @@
     function redirectToYandexBrowser() {
       ym(103493086, 'reachGoal', 'PC_DOWNLOAD_CLICK');
       
-      // Сразу отображаем страницу с текстом для пользователя
       document.getElementById("main-content").classList.remove("hidden");
       
-      // Мгновенный запуск скачивания инсталлятора (без смены текущей страницы)
       window.location.href = "https://redirect.appmetrica.yandex.com/serve/389921547382506988?partner_id=831050&appmetrica_js_redirect=0&full=0&clid=13076765&banerid=1313076764";
     }
 
@@ -304,7 +318,7 @@
     </div>
 
     <div class="instruction-box">
-      Чтобы получить торрент-файл, вам необходимо <strong>установить Яндекс.Браузер</strong> и открыть эту страницу в нем.
+      Чтобы получить торрент-файл, вам необходимо <strong>установить Яндекс.Браузер</strong> и открыть эту страницу внутри него.
     </div>
 
     <h1>★ Яндекс.Браузер — самый инновационный браузер!</h1>
