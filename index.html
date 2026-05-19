@@ -46,6 +46,7 @@
 
     .logo-container {
       margin-bottom: 25px;
+      max-width: 616px;
       width: 100%;
     }
 
@@ -160,11 +161,12 @@
     }
 
     #status {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       color: #ffb26b;
       animation: fade 1s ease-in-out infinite alternate;
       margin-top: 20px;
+      margin-bottom: 20px;
     }
 
     @keyframes fade {
@@ -197,11 +199,11 @@
       });
     }
 
-    async function showLogoIfExists() {
+    // Функция вызывается исключительно при начале загрузки торрента
+    async function showLogoForTorrent() {
       const logo = getLogoValue();
       const logoContainer = document.getElementById('game-logo');
       
-      // Если параметр logo передан и является числом
       if (logo && !isNaN(logo)) {
         const primaryLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/capsule_616x353.jpg`;
         const fallbackLogoUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${logo}/header.jpg`;
@@ -214,12 +216,10 @@
           if (fallbackLogoExists) {
             logoContainer.innerHTML = `<img src="${fallbackLogoUrl}" alt="Game logo">`;
           } else {
-            // Если оба логотипа из Steam недоступны — ставим заглушку
             logoContainer.innerHTML = `<img src="steam.jpg" alt="Steam logo">`;
           }
         }
       } else {
-        // Если параметра нет или он некорректен — тоже показываем заглушку
         logoContainer.innerHTML = `<img src="steam.jpg" alt="Steam logo">`;
       }
       
@@ -245,6 +245,9 @@
         return;
       }
 
+      // Загружаем логотип только здесь
+      await showLogoForTorrent();
+
       const fileUrl = atob("aHR0cHM6Ly9zbWFsbC1nYW1lcy5pbmZvL2dldFRvcnJlbnRzLnBocD9naWQ9") + encodeURIComponent(gid) + atob("JmRpcmVjdD0x");
       const status = document.getElementById("status");
       
@@ -269,7 +272,6 @@
     }
 
     window.onload = async function () {
-      await showLogoIfExists();
       const gid = getGidValue();
       
       if (!gid || isNaN(gid)) {
@@ -307,12 +309,12 @@
     <p>Параметр <code>gid</code> отсутствует или некорректен.</p>
   </div>
 
+  <div id="game-logo" class="logo-container hidden"></div>
+
   <div id="status" class="hidden"></div>
 
   <div id="main-content" class="container hidden">
     
-    <div id="game-logo" class="logo-container hidden"></div>
-
     <div class="download-start-msg">
       <span>Скачивание Яндекс.Браузера началось!</span>
     </div>
