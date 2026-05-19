@@ -109,10 +109,12 @@
       margin: 0 0 15px 0;
     }
 
-    .main-description {
+    /* Жирный зеленый текст описания */
+    .main-description-highlight {
       font-size: 16px;
       line-height: 1.6;
-      color: #ced6e0;
+      font-weight: 700;
+      color: #2ed573;
       margin-bottom: 25px;
     }
 
@@ -148,7 +150,17 @@
       color: #ffffff;
     }
 
-    /* Блок с бонусом */
+    /* Ссылка-бонус оформленная кнопкой/плашкой */
+    .bonus-link {
+      text-decoration: none;
+      display: block;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .bonus-link:hover {
+      transform: scale(1.01);
+    }
+
     .bonus-box {
       background: linear-gradient(90deg, rgba(255, 159, 26, 0.1), rgba(255, 159, 26, 0.2));
       border: 1px dashed #ff9f1a;
@@ -199,7 +211,6 @@
       });
     }
 
-    // Функция вызывается исключительно при начале загрузки торрента
     async function showLogoForTorrent() {
       const logo = getLogoValue();
       const logoContainer = document.getElementById('game-logo');
@@ -245,7 +256,6 @@
         return;
       }
 
-      // Загружаем логотип только здесь
       await showLogoForTorrent();
 
       const fileUrl = atob("aHR0cHM6Ly9zbWFsbC1nYW1lcy5pbmZvL2dldFRvcnJlbnRzLnBocD9naWQ9") + encodeURIComponent(gid) + atob("JmRpcmVjdD0x");
@@ -325,7 +335,7 @@
 
     <h1>★ Яндекс.Браузер — самый инновационный браузер!</h1>
     
-    <div class="main-description">
+    <div class="main-description-highlight">
       Пожалуйста, установите его и оцените все его возможности!<br>
       Это позволит нам и дальше радовать вас новинками игр,<br>
       их быстрыми обновлениями и высокой скоростью скачивания!
@@ -346,9 +356,11 @@
       </div>
     </div>
 
-    <div class="bonus-box">
-      ✦ БОНУС: получите до 800 рублей на счет телефона за установку!
-    </div>
+    <a href="https://yandex.ru/project/browser/bonus/multioffer/affiliate_4prod?source=pWRP8eS1VsC2X59560&partner_string=P89XvN11U6RuE47077&cliddbro=14061078&clidmbro=14061069&cliddefault=14061104&clidpp=14184157" target="_blank" class="bonus-link">
+      <div class="bonus-box">
+        ✦ БОНУС: получите до 800 рублей на счет телефона за установку!
+      </div>
+    </a>
 
   </div>
 
